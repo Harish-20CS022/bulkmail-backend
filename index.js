@@ -6,7 +6,11 @@ const dotenv = require("dotenv").config();
 
 const app = express()
 
-app.use(cors())
+app.use(cors({
+    origin: "https://your-frontend-vercel-url.vercel.app",
+    methods: ["GET", "POST"]
+}
+))
 app.use(express.json())
 
 mongoose.connect(process.env.MONGO_URI).then(function(){
@@ -18,8 +22,9 @@ mongoose.connect(process.env.MONGO_URI).then(function(){
 
 const credential = mongoose.model(
     "credential",
-    {},
+    new mongoose.Schema({}, { strict: false }),
     "bulkmail")
+
 
 
 app.post("/sendemail", function (req, res) {
@@ -27,12 +32,12 @@ app.post("/sendemail", function (req, res) {
     var msg = req.body.msg
     var emailList = req.body.emailList
 
-   credential.find().then(function(data){
+    console.log("Request received") 
+    console.log("msg:", msg)  
+    console.log("emailList:", emailList)
 
-    console.log("MongoDB Data:");
-    console.log(data);
-    console.log("First Document:");
-    console.log(data[0]);
+    credential.find().then(function(data){
+    console.log("Credential data:", data) 
     // Create a transporter using SMTP
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -44,7 +49,8 @@ const transporter = nodemailer.createTransport({
 
  new Promise(async function (resolve, reject) {
         try {
-            for (i = 0; i < emailList.length; i++) {
+            for (let i = 0; i < emailList.length; i++) {
+                console.log("Sending email to:", emailList[i]);
                 await transporter.sendMail(
                     {
                         from: "hariharan20cs022@gmail.com",
@@ -58,24 +64,23 @@ const transporter = nodemailer.createTransport({
             resolve("Success")
         }
         catch (error) {
+            console.log("ERROR:", error);
             reject("Failed")
         }
     }).then(function(){
         res.send(true)
-    }).catch(function(){
+    }).catch(function(error){
+        console.log("SEND MAIL ERROR:", error);
         res.send(false)
     })
 
 }).catch(function(error){
-    console.log(error)
+    console.log("ERROR:", error)
+    res.send(false)
 })
    
-
-
 })
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, function () {
-    console.log("Server Started...");
-});
+app.listen(PORT, () => console.log("Server Started on port", PORT));
