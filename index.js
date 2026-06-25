@@ -7,7 +7,7 @@ const dotenv = require("dotenv").config();
 const app = express()
 
 app.use(cors({
-    origin: "https://your-frontend-vercel-url.vercel.app",
+    origin: "https://bulkmail-frontend.vercel.app",
     methods: ["GET", "POST"]
 }
 ))
