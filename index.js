@@ -25,7 +25,9 @@ const credential = mongoose.model(
     new mongoose.Schema({}, { strict: false }),
     "bulkmail")
 
-
+app.get("/", function(req, res){
+    res.send("Server is running")
+})
 
 app.post("/sendemail", function (req, res) {
 
