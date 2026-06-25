@@ -43,6 +43,8 @@
         // Create a transporter using SMTP
     const transporter = nodemailer.createTransport({
         service: "gmail",
+        port: 587,
+    secure: false,
         auth: {
             user: data[0].toJSON().username,
             pass: data[0].toJSON().password,
