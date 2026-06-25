@@ -59,7 +59,7 @@ app.post("/sendemail", function (req, res) {
                     console.log("Sending email to:", emailList[i]);
                     await resend.emails.send(
                         {
-                            from: "hariharan20cs022@gmail.com",
+                            from: "onboarding@resend.dev",
                             to: emailList[i],
                             subject: "A Message from Bulk Mail App",
                             text: msg
