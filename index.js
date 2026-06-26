@@ -67,24 +67,18 @@ app.post("/sendemail", function (req, res) {
                     )
                     console.log("Email sent to:" + emailList[i])
                 }
-                res.send(true)
+                resolve("Success")
                 
             }
             catch (error) {
                 console.log("ERROR:", error);
-                res.send(false)
+                reject("Failed")
             }
         }).then(function () {
             res.send(true)
         }).catch(function (error) {
             console.log("SEND MAIL ERROR:", error);
             res.send(false)
-        })
-
-    }).catch(function (error) {
-        console.log("ERROR:", error)
-        res.send(false)
-    })
 
 })
 
