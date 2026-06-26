@@ -1,6 +1,5 @@
 const express = require("express")
 const cors = require("cors")
-const nodemailer = require("nodemailer");
 const mongoose = require("mongoose")
 const dotenv = require("dotenv").config();
 const { Resend } = require("resend")
@@ -42,33 +41,20 @@ app.post("/sendemail", function (req, res) {
 
     credential.find().then(function (data) {
         console.log("Credential data:", data)
-        // Create a transporter using SMTP
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            port: 587,
-            secure: false,
-            auth: {
-                user: data[0].toJSON().username,
-                pass: data[0].toJSON().password,
-            },
-        });
 
         new Promise(async function (resolve, reject) {
             try {
                 for (let i = 0; i < emailList.length; i++) {
                     console.log("Sending email to:", emailList[i]);
-                    await resend.emails.send(
-                        {
-                            from: "onboarding@resend.dev",
-                            to: emailList[i],
-                            subject: "A Message from Bulk Mail App",
-                            text: msg
-                        }
-                    )
+                    await resend.emails.send({
+                        from: "onboarding@resend.dev",
+                        to: emailList[i],
+                        subject: "A Message from Bulk Mail App",
+                        text: msg
+                    })
                     console.log("Email sent to:" + emailList[i])
                 }
                 resolve("Success")
-                
             }
             catch (error) {
                 console.log("ERROR:", error);
@@ -79,6 +65,12 @@ app.post("/sendemail", function (req, res) {
         }).catch(function (error) {
             console.log("SEND MAIL ERROR:", error);
             res.send(false)
+        })
+
+    }).catch(function (error) {
+        console.log("ERROR:", error)
+        res.send(false)
+    })
 
 })
 
